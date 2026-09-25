@@ -101,7 +101,7 @@ void UAuraAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) 
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, MaxMana, OldMaxMana);
 }
 
-
-bool IsAbilitySystemComponentValid(const UAbilitySystemComponent* AbilitySystemComponent){
+bool UAuraAttributeSet::IsAbilitySystemComponentValid(const UAbilitySystemComponent* AbilitySystemComponent)
+{
 	return IsValid(AbilitySystemComponent) && AbilitySystemComponent->AbilityActorInfo.IsValid() && AbilitySystemComponent->AbilityActorInfo->AvatarActor.IsValid();
 }

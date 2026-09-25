@@ -91,7 +91,7 @@ public:
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
 	
 private:
-	bool IsAbilitySystemComponentValid(const UAbilitySystemComponent* AbilitySystemComponent);
+	static bool IsAbilitySystemComponentValid(const UAbilitySystemComponent* AbilitySystemComponent);
 
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties);
 };
