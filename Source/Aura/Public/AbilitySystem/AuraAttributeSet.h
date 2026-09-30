@@ -83,6 +83,50 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Vigor);
 	
 	/* 
+	 * SECONDARY ATTRIBUTES
+	*/
+	
+	UPROPERTY(BlueprintReadOnly, Category= "Secondary Attributes",ReplicatedUsing = OnRep_Armor)
+	FGameplayAttributeData Armor;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor);
+	
+	UPROPERTY(BlueprintReadOnly, Category= "Secondary Attributes",ReplicatedUsing = OnRep_ArmorPenetration)
+	FGameplayAttributeData ArmorPenetration;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArmorPenetration);
+	
+	UPROPERTY(BlueprintReadOnly, Category= "Secondary Attributes",ReplicatedUsing = OnRep_BlockChance)
+	FGameplayAttributeData BlockChance;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, BlockChance);
+	
+	UPROPERTY(BlueprintReadOnly, Category= "Secondary Attributes",ReplicatedUsing = OnRep_CriticalHitChance)
+	FGameplayAttributeData CriticalHitChance;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitChance);
+	
+	UPROPERTY(BlueprintReadOnly, Category= "Secondary Attributes",ReplicatedUsing = OnRep_CriticalHitDamage)
+	FGameplayAttributeData CriticalHitDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitDamage);
+	
+	UPROPERTY(BlueprintReadOnly, Category= "Secondary Attributes",ReplicatedUsing = OnRep_CriticalHitResistance)
+	FGameplayAttributeData CriticalHitResistance;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance);
+	
+	UPROPERTY(BlueprintReadOnly, Category= "Secondary Attributes",ReplicatedUsing = OnRep_HealthRegeneration)
+	FGameplayAttributeData HealthRegeneration;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration);
+	
+	UPROPERTY(BlueprintReadOnly, Category= "Secondary Attributes",ReplicatedUsing = OnRep_ManaRegeneration)
+	FGameplayAttributeData ManaRegeneration;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration);
+	
+	UPROPERTY(BlueprintReadOnly, Category= "Vital Attributes",ReplicatedUsing = OnRep_MaxMana)
+	FGameplayAttributeData MaxMana;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
+	
+	UPROPERTY(BlueprintReadOnly, Category= "Vital Attributes",ReplicatedUsing = OnRep_MaxHealth)
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth);
+	
+	/* 
 	 *  VITAL ATTRIBUTES
 	 */
 	
@@ -90,17 +134,9 @@ public:
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
 	
-	UPROPERTY(BlueprintReadOnly, Category= "Vital Attributes",ReplicatedUsing = OnRep_MaxHealth)
-	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth);
-	
 	UPROPERTY(BlueprintReadOnly, Category= "Vital Attributes",ReplicatedUsing = OnRep_Mana)
 	FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
-	
-	UPROPERTY(BlueprintReadOnly, Category= "Vital Attributes",ReplicatedUsing = OnRep_MaxMana)
-	FGameplayAttributeData MaxMana;
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
 	
 	/* 
 	 * PRIMARY ATTRIBUTES
@@ -119,20 +155,49 @@ public:
 	void OnRep_Vigor(const FGameplayAttributeData& OldVigor) const;
 	
 	/* 
+	 * SECONDARY ATTRIBUTES
+	 */
+	
+	UFUNCTION()
+	void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;
+	
+	UFUNCTION()
+	void OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration) const;
+	
+	UFUNCTION()
+	void OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const;
+	
+	UFUNCTION()
+	void OnRep_CriticalHitChance(const FGameplayAttributeData& OldCriticalHitChance) const;
+	
+	UFUNCTION()
+	void OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const;
+	
+	UFUNCTION()
+	void OnRep_CriticalHitResistance(const FGameplayAttributeData& OldCriticalHitResistance) const;
+	
+	UFUNCTION()
+	void OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const;
+	
+	UFUNCTION()
+	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;
+	
+	UFUNCTION()
+	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
+	
+	UFUNCTION()
+	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
+	
+	/* 
 	 * VITAL ATTRIBUTES
 	 */
 	
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 	
-	UFUNCTION()
-	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;	
 	
 	UFUNCTION()
 	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
-	
-	UFUNCTION()
-	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
 	
 private:
 	static bool IsAbilitySystemComponentValid(const UAbilitySystemComponent* AbilitySystemComponent);
