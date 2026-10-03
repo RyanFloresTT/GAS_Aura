@@ -28,5 +28,8 @@ class AURA_API UAuraInputConfig : public UDataAsset
 	GENERATED_BODY()
 	
 public:
+	const UInputAction* GetInputAction(const FGameplayTag& GameplayTag, bool bLogNotFound = false) const;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FAuraInputAction> AbilityInputActions;
 };
