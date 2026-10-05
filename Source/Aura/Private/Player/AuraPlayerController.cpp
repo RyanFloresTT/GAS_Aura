@@ -109,35 +109,11 @@ void AAuraPlayerController::CursorTrace()
 	LastActor = ThisActor;
 	ThisActor = CursorHit.GetActor();
 	
-	if (LastActor == nullptr)
+	if (LastActor != ThisActor)
 	{
-		if (ThisActor != nullptr)
-		{
-			ThisActor->HighlightActor();
-		} else
-		{
-			// do nothing
-		}
-	} else
-	{
-		if (ThisActor == nullptr)
-		{
-			LastActor->UnhighlightActor();
-		} else
-		{
-			if (LastActor != ThisActor)
-			{
-				LastActor->UnhighlightActor();
-				ThisActor->HighlightActor();
-			} else
-			{
-				//  do nothing
-			}
-		}
-		
+		if (LastActor) LastActor->UnhighlightActor();
+		if (ThisActor) ThisActor->HighlightActor();
 	}
-	
-	
 }
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
@@ -157,9 +133,8 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		GetASC()->AbilityInputTagReleased(InputTag);
 		return;
 	}
-	
-	APawn* ControlledPawn = GetPawn();
-	if (FollowTime <= ShortPressThreshold && ControlledPawn)
+
+	if (const APawn* ControlledPawn = GetPawn(); FollowTime <= ShortPressThreshold && ControlledPawn)
 	{
 		UNavigationPath* NavigationPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination);
 		if (!NavigationPath) return;
@@ -169,7 +144,6 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		for (const FVector& PointLoc: NavigationPath->PathPoints)
 		{
 			Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
-			DrawDebugSphere(GetWorld(), PointLoc, 10.f, 16, FColor::Red, false, 5.f);
 		}
 		CachedDestination = NavigationPath->PathPoints.Last();
 		bAutoRunning = true;
