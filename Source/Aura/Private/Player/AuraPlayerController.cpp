@@ -24,6 +24,28 @@ void AAuraPlayerController::PlayerTick(float DeltaSeconds)
 	Super::PlayerTick(DeltaSeconds);
 	
 	CursorTrace();
+	
+	HandleAutoRunning();
+}
+
+void AAuraPlayerController::HandleAutoRunning()
+{
+	if (!bAutoRunning) return;
+	
+	if (APawn* ControlledPawn = GetPawn())
+	{
+		const FVector LocationOnSpline = Spline->FindLocationClosestToWorldLocation(ControlledPawn->GetActorLocation(), ESplineCoordinateSpace::World);
+		const FVector Direction = Spline->FindDirectionClosestToWorldLocation(ControlledPawn->GetActorLocation(), ESplineCoordinateSpace::World);
+		
+		ControlledPawn->AddMovementInput(Direction);
+		
+		const float DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
+		
+		if (DistanceToDestination <= AutoRunAcceptanceRadius)
+		{
+			bAutoRunning = false;
+		}
+	}
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -80,8 +102,6 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult CursorHit;
-	
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	
 	if (!CursorHit.bBlockingHit) return;
@@ -151,8 +171,10 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 			Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
 			DrawDebugSphere(GetWorld(), PointLoc, 10.f, 16, FColor::Red, false, 5.f);
 		}
+		CachedDestination = NavigationPath->PathPoints.Last();
 		bAutoRunning = true;
 	}
+	FollowTime = 0.f;
 }
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
@@ -168,10 +190,9 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	{
 		FollowTime += GetWorld()->GetDeltaSeconds();
 		
-		FHitResult Hit;
-		if (GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, Hit))
+		if (CursorHit.bBlockingHit)
 		{
-			CachedDestination = Hit.Location;
+			CachedDestination = CursorHit.Location;
 		}
 		
 		if (APawn* ControlledPawn = GetPawn())
