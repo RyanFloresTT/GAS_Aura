@@ -82,6 +82,9 @@ void AAuraPlayerController::SetupInputComponent()
 		&AAuraPlayerController::AbilityInputTagPressed,
 		&AAuraPlayerController::AbilityInputTagReleased,
 		&AAuraPlayerController::AbilityInputTagHeld);
+	
+	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
+	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftReleased);
 }	
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
@@ -127,10 +130,17 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
-	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB) || bHasTarget)
+	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
 		if (GetASC() == nullptr) return;
 		GetASC()->AbilityInputTagReleased(InputTag);
+		return;
+	}
+
+	if (bHasTarget || bShiftPressed)
+	{
+		FollowTime = 0.f;
+		bHasTarget = false;
 		return;
 	}
 
@@ -149,31 +159,36 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		bAutoRunning = true;
 	}
 	FollowTime = 0.f;
+	bHasTarget = false;
 }
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB) || bHasTarget)
+	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
 		if (GetASC() == nullptr) return;
 		GetASC()->AbilityInputTagHeld(InputTag);
 		return;
 	}
 	
-	if (!bHasTarget)
+	if (bHasTarget || bShiftPressed)
 	{
-		FollowTime += GetWorld()->GetDeltaSeconds();
-		
-		if (CursorHit.bBlockingHit)
-		{
-			CachedDestination = CursorHit.Location;
-		}
-		
-		if (APawn* ControlledPawn = GetPawn())
-		{
-			const FVector LookAtTarget = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-			ControlledPawn->AddMovementInput(LookAtTarget);
-		}
+		if (GetASC() == nullptr) return;
+		GetASC()->AbilityInputTagHeld(InputTag);
+		return;
+	}
+	
+	FollowTime += GetWorld()->GetDeltaSeconds();
+	
+	if (CursorHit.bBlockingHit)
+	{
+		CachedDestination = CursorHit.Location;
+	}
+	
+	if (APawn* ControlledPawn = GetPawn())
+	{
+		const FVector LookAtTarget = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+		ControlledPawn->AddMovementInput(LookAtTarget);
 	}
 }
 
